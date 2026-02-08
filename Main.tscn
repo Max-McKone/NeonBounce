@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8x4w6k2h7p8"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1152, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(50, 648)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(576, 623)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = Sub_resource("RectangleShape2D_floor")
+
+[node name="ColorRect" type="ColorRect" parent="Floor"]
+offset_left = -576.0
+offset_top = -25.0
+offset_right = 576.0
+offset_bottom = 25.0
+color = Color(0.2, 0.2, 0.4, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(25, 324)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = Sub_resource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="LeftWall"]
+offset_left = -25.0
+offset_top = -324.0
+offset_right = 25.0
+offset_bottom = 324.0
+color = Color(0.2, 0.2, 0.4, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(1127, 324)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = Sub_resource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="RightWall"]
+offset_left = -25.0
+offset_top = -324.0
+offset_right = 25.0
+offset_bottom = 324.0
+color = Color(0.2, 0.2, 0.4, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0

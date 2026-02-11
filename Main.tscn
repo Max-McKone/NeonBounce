@@ -1,54 +1,77 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8x4w6k2h7p8"]
+[gd_scene load_steps=11 format=3 uid="uid://c8x4w6k2h7p8"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://b5p8q2j6m8o2j" path="res://Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://d3y1m6q6m8o2j" path="res://Wall.tscn" id="3_wall"]
+[ext_resource type="Script" path="res://CameraFollow.gd" id="4_camera_script"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(1152, 50)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
+sky_top_color = Color(0.05, 0.05, 0.1, 1)
+sky_horizon_color = Color(0, 0, 0.1, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
-size = Vector2(50, 648)
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_main")
 
-[node name="Main" type="Node2D"]
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 1.5
+glow_strength = 1.0
+glow_bloom = 0.3
+glow_blend_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.05, 0.05, 0.1, 1)
+metallic = 0.5
+roughness = 0.2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+material = SubResource("StandardMaterial3D_floor")
+size = Vector2(100, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_floor"]
+data = PackedVector3Array(50, 0, 50, -50, 0, 50, 50, 0, -50, -50, 0, 50, -50, 0, -50, 50, 0, -50)
+
+[node name="Main" type="Node3D"]
 script = ExtResource("1_script")
 
-[node name="Floor" type="StaticBody2D" parent="."]
-position = Vector2(576, 623)
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-shape = Sub_resource("RectangleShape2D_floor")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+light_color = Color(0.2, 0.2, 0.5, 1)
+light_energy = 0.5
+shadow_enabled = true
 
-[node name="ColorRect" type="ColorRect" parent="Floor"]
-offset_left = -576.0
-offset_top = -25.0
-offset_right = 576.0
-offset_bottom = 25.0
-color = Color(0.2, 0.2, 0.4, 1)
+[node name="Floor" type="StaticBody3D" parent="."]
 
-[node name="LeftWall" type="StaticBody2D" parent="."]
-position = Vector2(25, 324)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_floor")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
-shape = Sub_resource("RectangleShape2D_wall")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("ConcavePolygonShape3D_floor")
 
-[node name="ColorRect" type="ColorRect" parent="LeftWall"]
-offset_left = -25.0
-offset_top = -324.0
-offset_right = 25.0
-offset_bottom = 324.0
-color = Color(0.2, 0.2, 0.4, 1)
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="RightWall" type="StaticBody2D" parent="."]
-position = Vector2(1127, 324)
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 15, 4)
+fov = 40.0
+script = ExtResource("4_camera_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
-shape = Sub_resource("RectangleShape2D_wall")
+[node name="Walls" type="Node3D" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="RightWall"]
-offset_left = -25.0
-offset_top = -324.0
-offset_right = 25.0
-offset_bottom = 324.0
-color = Color(0.2, 0.2, 0.4, 1)
+[node name="Wall1" parent="Walls" instance=ExtResource("3_wall")]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
+[node name="Wall2" parent="Walls" instance=ExtResource("3_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 10, -5, 1, 0)
+
+[node name="Wall3" parent="Walls" instance=ExtResource("3_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 10, 5, 1, 5)
+
+[node name="Wall4" parent="Walls" instance=ExtResource("3_wall")]
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 15)
